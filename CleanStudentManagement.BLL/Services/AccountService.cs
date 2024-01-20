@@ -52,7 +52,7 @@ namespace CleanStudentManagement.BLL.Services
             {
                 Data = teacherViewModel,
                 TotalItems = _unitOfWork.GenericRepository<User>()
-                .GetAll().Where(x =>x.Role ==  (int)EnumRoles.Teacher).Count(),
+                .GetAll().Where(x => x.Role == (int)EnumRoles.Teacher).Count(),
                 PageNumber = PageNumber,
                 PageSize = PageSize
             };
@@ -66,15 +66,31 @@ namespace CleanStudentManagement.BLL.Services
 
         public LoginViewModel Login(LoginViewModel loginViewModel)
         {
+            if (loginViewModel.Role == (int)EnumRoles.Teacher || loginViewModel.Role == (int)EnumRoles.Admin)
+            {
                 var user = _unitOfWork.GenericRepository<User>().GetAll().
-                    FirstOrDefault(a =>a.UserName == loginViewModel.UserName.Trim()
+                    FirstOrDefault(a => a.UserName == loginViewModel.UserName.Trim()
                     && a.Password == loginViewModel.Password && a.Role == loginViewModel.Role);
 
-                if(user != null)
+                if (user != null)
                 {
                     loginViewModel.Id = user.Id;
                     return loginViewModel;
                 }
+            }
+            else
+            {
+                var student = _unitOfWork.GenericRepository<Student>().GetAll().
+                    FirstOrDefault(a => a.UserName == loginViewModel.UserName.Trim()
+                    && a.Password == loginViewModel.Password);
+
+                if (student != null)
+                {
+                    loginViewModel.Id = student.Id;
+                    return loginViewModel;
+                }
+            }
+
             return null;
         }
     }
