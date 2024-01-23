@@ -16,6 +16,8 @@ namespace CleanStudentManagement.Data.Entities
         public string? CVFileName { get; set; }
         public string? ProfilePicture { get; set; }
         public int? GroupId { get; set; }
+        public virtual Group Group { get; set; }
+        public virtual ICollection<ExamResult> ExamResults { get; set; }
 
     }
 }

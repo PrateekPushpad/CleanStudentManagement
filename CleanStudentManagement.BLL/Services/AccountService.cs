@@ -41,22 +41,27 @@ namespace CleanStudentManagement.BLL.Services
 
         public PagedResult<TeacherViewModel> GetAllTeacher(int PageNumber, int PageSize)
         {
-            int excludeRecord = (PageNumber * PageSize) - PageSize;
-            List<TeacherViewModel> teacherViewModel = new List<TeacherViewModel>();
-            var userList = _unitOfWork.GenericRepository<User>().GetAll()
-                .Where(x => x.Role == (int)EnumRoles.Teacher)
-                .Skip(excludeRecord).Take(PageSize).ToList();
-
-            teacherViewModel = ListInfo(userList);
-            var result = new PagedResult<TeacherViewModel>
+            try
             {
-                Data = teacherViewModel,
-                TotalItems = _unitOfWork.GenericRepository<User>()
-                .GetAll().Where(x => x.Role == (int)EnumRoles.Teacher).Count(),
-                PageNumber = PageNumber,
-                PageSize = PageSize
-            };
-            return result;
+                int excludeRecord = (PageNumber * PageSize) - PageSize;
+                List<TeacherViewModel> teacherViewModel = new List<TeacherViewModel>();
+                var userList = _unitOfWork.GenericRepository<User>().GetAll()
+                    .Where(x => x.Role == (int)EnumRoles.Teacher)
+                    .Skip(excludeRecord).Take(PageSize).ToList();
+
+                teacherViewModel = ListInfo(userList);
+                var result = new PagedResult<TeacherViewModel>
+                {
+                    Data = teacherViewModel,
+                    TotalItems = _unitOfWork.GenericRepository<User>()
+                    .GetAll().Where(x => x.Role == (int)EnumRoles.Teacher).Count(),
+                    PageNumber = PageNumber,
+                    PageSize = PageSize
+                };
+                return result;
+            }
+            catch(Exception ex) { throw; }
+            
         }
 
         private List<TeacherViewModel> ListInfo(List<User> userList)

@@ -44,9 +44,38 @@ namespace CleanStudentManagement.BLL.Services
             
         }
 
+        public IEnumerable<ExamViewModel> GetExamResult(int studentId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<StudentViewModel> ListInfo(List<Student> students)
         {
             return students.Select(x => new StudentViewModel(x)).ToList();
+        }
+
+        public bool SetGroupIdToStudent(GroupStudentViewModel viewModel)
+        {
+            try
+            {
+                foreach(var item in viewModel.studentList)
+                {
+                    var student = _unitOfWork.GenericRepository<Student>().GetById(item.Id);
+                    if(item.IsChecked)
+                    {
+                        student.GroupId = viewModel.GroupId;
+                        _unitOfWork.GenericRepository<Student>().Update(student);
+                    }
+                    else
+                    {
+                        student.GroupId = null;
+                    }
+                    _unitOfWork.Save();
+                    return true;
+                }
+            }
+            catch(Exception ex) { throw; }
+            return false;
         }
     }
 }

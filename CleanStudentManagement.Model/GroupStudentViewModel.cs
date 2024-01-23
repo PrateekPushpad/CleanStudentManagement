@@ -9,6 +9,6 @@ namespace CleanStudentManagement.Models
     public class GroupStudentViewModel
     {
         public int GroupId { get; set; }
-        public List<CheckBoxTable> studentList { get; set; } = new();
+        public List<CheckBoxTable> StudentList { get; set; } = new();
     }
 }

@@ -1,23 +1,28 @@
 ﻿using CleanStudentManagement.BLL.Services;
 using CleanStudentManagement.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace CleanStudentManagement.UI.Controllers
 {
     public class StudentController : Controller
     {
         private IStudentService _studentService;
-
-        public StudentController(IStudentService studentService)
+        private IExamService _examService;
+        private IQnAsService _qnAsService;
+        public StudentController(IStudentService studentService, IExamService examService, IQnAsService qnAsService)
         {
             _studentService = studentService;
+            _examService = examService;
+            _qnAsService = qnAsService;
         }
 
         public IActionResult Index()
         {
             return View();
         }
-        [HttpGet] 
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -26,8 +31,54 @@ namespace CleanStudentManagement.UI.Controllers
         public async Task<IActionResult> Create(CreateStudentViewModel vm)
         {
             var success = await _studentService.CreateStudent(vm);
-            if(success > 0) { return RedirectToAction("Index"); }
+            if (success > 0) { return RedirectToAction("Index"); }
             else { return View(vm); }
+
         }
+
+        [HttpGet]
+        public IActionResult AttendExam()
+        {
+            var model = new AttendExamViewModel();
+            string loginObj = HttpContext.Session.GetString("loginDetails");
+            LoginViewModel sessionObj = JsonConvert.DeserializeObject<LoginViewModel>(loginObj);
+            if (sessionObj != null)
+            {
+                model.StudentId = sessionObj.Id;
+                var todayExam = _examService.GetAllExams()
+                    .Where(x => x.StartDate.Date == DateTime.Now.Date).FirstOrDefault();
+                if (todayExam == null)
+                {
+                    model.Message = "No Exams schedule today!!";
+                    return View(model);
+                }
+                else
+                {
+                    if (!_qnAsService.IsAttendExam(todayExam.Id, model.StudentId))
+                    {
+                        model.QnAsList = _qnAsService.GetAllByExamId(todayExam.Id).ToList();
+                        model.ExamName = todayExam.Title;
+                        return View(model);
+                    }
+                    else
+                    {
+                        model.Message = "You have already attend this exam!!";
+                    }
+                }
+            }
+            return RedirectToAction("Login", "Account");
+        }
+
+        [HttpPost]
+        public IActionResult AttendExam(AttendExamViewModel viewModel)
+        {
+            bool result = _qnAsService.SetExamResult(viewModel);
+            return RedirectToAction("");
+        }
+        //public IActionResult Result(int studentId)
+        //{
+        //    var model = _studentService.GetExamResult(studentId);
+        //    return RedirectToAction("");
+        //}
     }
 }

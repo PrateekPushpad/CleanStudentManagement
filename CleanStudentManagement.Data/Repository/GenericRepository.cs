@@ -75,7 +75,7 @@ namespace CleanStudentManagement.Data.Repository
 
         public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null)
         {
-            IQueryable<T> Query = null;
+            IQueryable<T> Query = _dbSet;
             if(filter != null)
             {
                 Query = Query.Where(filter);
