@@ -9,6 +9,10 @@ namespace CleanStudentManagement.Models
 {
     public class GroupViewModel
     {
+        public GroupViewModel()
+        {
+            
+        }
         public GroupViewModel(Group group)
         {
             Id = group.Id;

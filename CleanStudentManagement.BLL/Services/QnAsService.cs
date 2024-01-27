@@ -42,8 +42,8 @@ namespace CleanStudentManagement.BLL.Services
         public bool IsAttendExam(int ExamId, int StudentId)
         {
             var result = _unitOfWork.GenericRepository<ExamResult>()
-                .GetAll().Where(x=>x.ExamId == ExamId && x.StudentId == StudentId);
-            return result == null? false: true;
+                .GetAll().Any(x=>x.ExamId == ExamId && x.StudentId == StudentId);
+            return result == false? false: true;
         }
 
         public bool SetExamResult(AttendExamViewModel viewModel)

@@ -11,16 +11,46 @@ namespace CleanStudentManagement.UI.Controllers
         private IStudentService _studentService;
         private IExamService _examService;
         private IQnAsService _qnAsService;
-        public StudentController(IStudentService studentService, IExamService examService, IQnAsService qnAsService)
+        private string containerName = "StudentImage";
+        private string cvContainerName = "StudentCV";
+
+        private IUtilityService _utilityService;
+        public StudentController(IStudentService studentService, IExamService examService, IQnAsService qnAsService, IUtilityService utilityService)
         {
             _studentService = studentService;
             _examService = examService;
             _qnAsService = qnAsService;
+            _utilityService = utilityService;
+        }
+        public IActionResult Profile()
+        {
+            var sessionObj = HttpContext.Session.GetString("loginDetails");
+            if (sessionObj != null)
+            {
+                var loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(sessionObj);
+                var studentDetails = _studentService.GetStudentById(loginViewModel.Id);
+                return View(studentDetails);
+            }
+            return RedirectToAction("Login", "Accounts");
+        }
+        [HttpPost]
+        public async Task<IActionResult> Profile(StudentProfileViewModel vm)
+        {
+            if (vm.ProfilePictureUrl != null)
+                vm.ProfilePicture = await _utilityService.SaveImage(containerName, vm.ProfilePictureUrl);
+            if (vm.CvFileUrl != null)
+                vm.CVFileName = await _utilityService.SaveImage(cvContainerName, vm.CvFileUrl);
+
+            _studentService.UpdateProfile(vm);
+            return RedirectToAction("profile");
+
         }
 
-        public IActionResult Index()
+
+        public IActionResult Index(int pageNumber = 1, int pageSize = 10)
         {
-            return View();
+
+            return View(_studentService.GetAllStudents(pageNumber, pageSize));
         }
         [HttpGet]
         public IActionResult Create()
@@ -75,10 +105,17 @@ namespace CleanStudentManagement.UI.Controllers
             bool result = _qnAsService.SetExamResult(viewModel);
             return RedirectToAction("");
         }
-        //public IActionResult Result(int studentId)
-        //{
-        //    var model = _studentService.GetExamResult(studentId);
-        //    return RedirectToAction("");
-        //}
+        public IActionResult Result()
+        {
+            var sessionObj = HttpContext.Session.GetString("loginDetails");
+            if (sessionObj != null)
+            {
+                var loginViewModel = JsonConvert.DeserializeObject<LoginViewModel>(sessionObj);
+                var model = _studentService.GetExamResults(Convert.ToInt32(loginViewModel.Id));
+                return View(model);
+
+            }
+            return RedirectToAction("Login", "Accounts");
+        }
     }
 }

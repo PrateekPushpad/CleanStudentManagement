@@ -1,7 +1,9 @@
 using CleanStudentManagement.BLL.Services;
 using CleanStudentManagement.Data;
 using CleanStudentManagement.Data.UnitOfWork;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,16 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IExamService, ExamService>();
+builder.Services.AddScoped<IQnAsService, QnAsService>();
+builder.Services.AddScoped<IUtilityService, UtilityService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(options =>
+        {
+            options.LoginPath = "/Accounts/Login";
+            options.AccessDeniedPath = "/Accounts/AccessDenied";
+        });
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromSeconds(30);
@@ -33,7 +45,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

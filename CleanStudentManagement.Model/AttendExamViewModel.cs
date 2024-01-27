@@ -12,5 +12,6 @@ namespace CleanStudentManagement.Models
         public string ExamName { get; set; }
         public List<QnAsViewModel> QnAsList { get; set; }
         public string Message { get; set; }
+
     }
 }

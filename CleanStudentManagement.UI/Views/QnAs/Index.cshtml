@@ -1,10 +1,4 @@
-﻿@model PagedResult<CleanStudentManagement.Models.ExamViewModel>
-
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
+﻿@model PagedResult<CleanStudentManagement.Models.QnAsViewModel>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,22 +7,28 @@
     <thead>
         <tr>
             <th>
-                Id
+               Id
             </th>
             <th>
-               Title
+                Question Title
             </th>
             <th>
-               Description
+                Exams Id
             </th>
             <th>
-               Start Date
+               Answer
             </th>
             <th>
-              Time (In Hours)
+               Option-1
             </th>
             <th>
-               Group
+              Option-2
+            </th>
+            <th>
+                Option-3
+            </th>
+            <th>
+               Option-4
             </th>
             <th></th>
         </tr>
@@ -40,21 +40,27 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Title)
+                @Html.DisplayFor(modelItem => item.QuestionTitle)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Description)
+                @Html.DisplayFor(modelItem => item.ExamId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
+                @Html.DisplayFor(modelItem => item.Answer)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Time)
+                @Html.DisplayFor(modelItem => item.Option1)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.GroupName)
+                @Html.DisplayFor(modelItem => item.Option2)
             </td>
-           @*  <td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Option3)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Option4)
+            </td>
+            @* <td>
                 @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
@@ -63,11 +69,12 @@
 }
     </tbody>
 </table>
+
 <cs-pager cs-paging-pagesize=(int)Model.PageSize
           cs-paging-pagenumber=(int)Model.PageNumber
           cs-paging-totalitems=(int)Model.TotalItems
           cs-pagenumber-param="pageNumber"
-          asp-controller="Exam"
+          asp-controller="QnAs"
           asp-action="Index"
           cs-pager-li-current-class="page-item active"
           cs-pager-li-other-class="page-item"

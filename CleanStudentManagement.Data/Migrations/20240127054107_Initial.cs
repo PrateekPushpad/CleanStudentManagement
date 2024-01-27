@@ -120,6 +120,7 @@ namespace CleanStudentManagement.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentId = table.Column<int>(type: "int", nullable: false),
+                    QnAsId = table.Column<int>(type: "int", nullable: false),
                     ExamId = table.Column<int>(type: "int", nullable: false),
                     Answer = table.Column<int>(type: "int", nullable: false)
                 },
@@ -131,14 +132,25 @@ namespace CleanStudentManagement.Data.Migrations
                         column: x => x.ExamId,
                         principalTable: "Exam",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ExamResult_QnAs_QnAsId",
+                        column: x => x.QnAsId,
+                        principalTable: "QnAs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ExamResult_Student_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Student",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "Name", "Password", "Role", "UserName" },
+                values: new object[] { 1, "Admin", "Admin@123", 1, "Admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Exam_GroupId",
@@ -149,6 +161,11 @@ namespace CleanStudentManagement.Data.Migrations
                 name: "IX_ExamResult_ExamId",
                 table: "ExamResult",
                 column: "ExamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExamResult_QnAsId",
+                table: "ExamResult",
+                column: "QnAsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExamResult_StudentId",
@@ -173,10 +190,10 @@ namespace CleanStudentManagement.Data.Migrations
                 name: "ExamResult");
 
             migrationBuilder.DropTable(
-                name: "QnAs");
+                name: "User");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "QnAs");
 
             migrationBuilder.DropTable(
                 name: "Student");

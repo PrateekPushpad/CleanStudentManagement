@@ -1,9 +1,12 @@
 ﻿using CleanStudentManagement.BLL.Services;
 using CleanStudentManagement.Models;
+using CleanStudentManagement.UI.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CleanStudentManagement.UI.Controllers
 {
+    //Filters :  Timinging, 
+    [RoleAuthorize(1)]
     public class UsersController : Controller
     {
         private IAccountService _accountService;

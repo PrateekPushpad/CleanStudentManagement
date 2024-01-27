@@ -43,7 +43,7 @@ namespace CleanStudentManagement.UI.Controllers
             vm.GroupId = group.Id;
             foreach(var student in students)
             {
-                vm.studentList.Add(new CheckBoxTable { Id = student.Id, Name = student.Name, IsChecked =false });
+                vm.StudentList.Add(new CheckBoxTable { Id = student.Id, Name = student.Name, IsChecked =student.GroupId==null?false:true });
             }
             return View(vm);
         }

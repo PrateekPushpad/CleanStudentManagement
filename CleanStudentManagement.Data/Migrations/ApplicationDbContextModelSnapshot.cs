@@ -68,12 +68,17 @@ namespace CleanStudentManagement.Data.Migrations
                     b.Property<int>("ExamId")
                         .HasColumnType("int");
 
+                    b.Property<int>("QnAsId")
+                        .HasColumnType("int");
+
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ExamId");
+
+                    b.HasIndex("QnAsId");
 
                     b.HasIndex("StudentId");
 
@@ -238,6 +243,12 @@ namespace CleanStudentManagement.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CleanStudentManagement.Data.Entities.QnAs", "QnAs")
+                        .WithMany("ExamResults")
+                        .HasForeignKey("QnAsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("CleanStudentManagement.Data.Entities.Student", "Student")
                         .WithMany("ExamResults")
                         .HasForeignKey("StudentId")
@@ -245,6 +256,8 @@ namespace CleanStudentManagement.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Exam");
+
+                    b.Navigation("QnAs");
 
                     b.Navigation("Student");
                 });
@@ -281,6 +294,11 @@ namespace CleanStudentManagement.Data.Migrations
                     b.Navigation("Exams");
 
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("CleanStudentManagement.Data.Entities.QnAs", b =>
+                {
+                    b.Navigation("ExamResults");
                 });
 
             modelBuilder.Entity("CleanStudentManagement.Data.Entities.Student", b =>
